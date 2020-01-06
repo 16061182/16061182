@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="argparse简介本文为博主原创，转载请注明出处！ argparse是一个命令行参数解析模块，还是挺有用的，下面介绍一些基本用法。 位置参数test.py： 123456789101112import argparseparser = argparse.ArgumentParser()parser.description = &apos;计算乘积&apos;parser.add_argument(&quot;ParA&quot;, h">
+<meta name="keywords" content="argparse,python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="argparse简介">
+<meta property="og:url" content="http://16061182.com/2019/08/18/argparse简介/index.html">
+<meta property="og:site_name" content="长夜不是宿醉的开始">
+<meta property="og:description" content="argparse简介本文为博主原创，转载请注明出处！ argparse是一个命令行参数解析模块，还是挺有用的，下面介绍一些基本用法。 位置参数test.py： 123456789101112import argparseparser = argparse.ArgumentParser()parser.description = &apos;计算乘积&apos;parser.add_argument(&quot;ParA&quot;, h">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-18T08:36:37.387Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="argparse简介">
+<meta name="twitter:description" content="argparse简介本文为博主原创，转载请注明出处！ argparse是一个命令行参数解析模块，还是挺有用的，下面介绍一些基本用法。 位置参数test.py： 123456789101112import argparseparser = argparse.ArgumentParser()parser.description = &apos;计算乘积&apos;parser.add_argument(&quot;ParA&quot;, h">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="长夜不是宿醉的开始" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="http://16061182.com/2019/08/18/argparse简介/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>argparse简介 | 长夜不是宿醉的开始</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/16061182" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">长夜不是宿醉的开始</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">16061182的个人博客</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://16061182.com/2019/08/18/argparse简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="16061182">
+      <meta itemprop="description" content="16061182的个人博客">
+      <meta itemprop="image" content="/assets/img/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长夜不是宿醉的开始">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">argparse简介
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-18 15:02:49 / 修改时间：16:36:37" itemprop="dateCreated datePublished" datetime="2019-08-18T15:02:49+08:00">2019-08-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/原创/" itemprop="url" rel="index"><span itemprop="name">原创</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/原创/教程/" itemprop="url" rel="index"><span itemprop="name">教程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="argparse简介"><a href="#argparse简介" class="headerlink" title="argparse简介"></a>argparse简介</h2><p>本文为博主原创，转载请注明出处！</p>
+<p>argparse是一个<strong>命令行参数解析</strong>模块，还是挺有用的，下面介绍一些基本用法。</p>
+<h3 id="位置参数"><a href="#位置参数" class="headerlink" title="位置参数"></a>位置参数</h3><p>test.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.description = <span class="string">'计算乘积'</span></span><br><span class="line">parser.add_argument(<span class="string">"ParA"</span>, help=<span class="string">'我是A'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">"ParB"</span>, help=<span class="string">'我是B'</span>, type=int)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="keyword">if</span> args.ParA:</span><br><span class="line">    print(<span class="string">"A is"</span>,args.ParA)</span><br><span class="line"><span class="keyword">if</span> args.ParB:</span><br><span class="line">    print(<span class="string">"B is"</span>,args.ParB)</span><br><span class="line"><span class="keyword">if</span> args.ParA <span class="keyword">and</span> args.ParB:</span><br><span class="line">    print(<span class="string">"A和B的乘积"</span>,args.ParA*args.ParB)</span><br></pre></td></tr></table></figure>
+
+<p>命令行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py 5 4</span><br><span class="line">A is 5</span><br><span class="line">B is 4</span><br><span class="line">A和B的乘积 20</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li><p>如果输入命令<code>python test.py --help</code>，会给出本程序所需所有参数的帮助信息，在本例中结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">usage: test.py [-h] ParA ParB</span><br><span class="line"></span><br><span class="line">计算乘积</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  ParA        我是A</span><br><span class="line">  ParB        我是B</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>.add_argument</code>中的<code>ParA</code>就是位置参数，在命令行输入命令的时候会根据参数的顺序为<code>ParA</code>和<code>ParB</code>赋值，<strong>位置参数不全的话会报错</strong>。</p>
+</li>
+<li><p>若不指定<code>type = int</code>，会默认输入参数为str。</p>
+</li>
+</ul>
+<hr>
+<h3 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h3><p>test.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.description = <span class="string">'计算乘积'</span></span><br><span class="line">parser.add_argument(<span class="string">"--ParA"</span>, <span class="string">'-a'</span>, help=<span class="string">'我是A'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">'-b'</span>, <span class="string">"--ParB"</span>, help=<span class="string">'我是B'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">'-c'</span>, <span class="string">"--ParC"</span>, help=<span class="string">'我是C'</span>, action=<span class="string">'store_true'</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="keyword">if</span> args.ParA:</span><br><span class="line">    print(<span class="string">"A is"</span>,args.ParA)</span><br><span class="line"><span class="keyword">if</span> args.ParB:</span><br><span class="line">    print(<span class="string">"B is"</span>,args.ParB)</span><br><span class="line"><span class="keyword">if</span> args.ParC:</span><br><span class="line">    print(<span class="string">"True"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>命令行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py --ParB 5 -a 4 --ParC</span><br><span class="line">A is 4</span><br><span class="line">B is 5</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li>把<code>ParA</code>改为<code>--ParA</code>之后，就变成了可选参数，相比位置参数，可选参数<strong>不要求顺序</strong>、<strong>不要求输入全部参数</strong>。</li>
+<li>命令行中可以用<code>-a</code>和<code>-b</code>可以代替<code>--ParA</code>和<code>--ParB</code>，<code>-aa</code>代替<code>--ParA --ParA</code>，使输入简化。</li>
+<li><code>action=&#39;store_true&#39;</code>使<code>--ParC</code>不接收值，该参数只起到通过<code>if args.ParC</code>判断是非的作用。如果命令行中写了<code>--ParC</code>，<code>args.ParC</code>的值为True。</li>
+</ul>
+<hr>
+<h3 id="位置参数和可选参数结合"><a href="#位置参数和可选参数结合" class="headerlink" title="位置参数和可选参数结合"></a>位置参数和可选参数结合</h3><p>（1）test.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">"ParA"</span>, help=<span class="string">'我是A'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">'-b'</span>, <span class="string">"--ParB"</span>, help=<span class="string">'我是B'</span>, type=int, choices=[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line">args = parser.parse_args()</span><br><span class="line">answer = args.ParA ** <span class="number">2</span></span><br><span class="line"><span class="keyword">if</span> args.ParB == <span class="number">2</span>:</span><br><span class="line">    print(<span class="string">"the square of &#123;&#125; equals &#123;&#125;"</span>.format(args.ParA, answer))</span><br><span class="line"><span class="keyword">elif</span> args.ParB == <span class="number">1</span>:</span><br><span class="line">    print(<span class="string">"&#123;&#125;^2 == &#123;&#125;"</span>.format(args.ParA, answer))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(answer)</span><br></pre></td></tr></table></figure>
+
+<p>命令行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py 4 -b 2</span><br><span class="line">the square of 4 equals 16</span><br><span class="line"></span><br><span class="line">$ python test.py -b 1 4</span><br><span class="line">4^2 == 16</span><br><span class="line"></span><br><span class="line">$ python test.py -b 3 4</span><br><span class="line">usage: test.py [-h] [--ParA PARA] [-b &#123;0,1,2&#125;]</span><br><span class="line">test.py: error: argument -b/--ParB: invalid choice: 3 (choose from 0, 1, 2)</span><br><span class="line"></span><br><span class="line">$ python test.py -h</span><br><span class="line">usage: test.py [-h] [-b &#123;0,1,2&#125;] ParA</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  ParA                  我是A</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">  -b &#123;0,1,2&#125;, --ParB &#123;0,1,2&#125;</span><br><span class="line">                        我是B</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li><code>ParA</code>和<code>ParB</code>的位置可以互换。</li>
+<li><code>choices=[0, 1, 2]</code>为<code>ParB</code>规定范围。</li>
+</ul>
+<p>（2）test.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">"ParA"</span>, help=<span class="string">'我是A'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">'-b'</span>, <span class="string">"--ParB"</span>, help=<span class="string">'我是B'</span>, action=<span class="string">'count'</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line">answer = args.ParA ** <span class="number">2</span></span><br><span class="line"><span class="keyword">if</span> args.ParB == <span class="number">2</span>:</span><br><span class="line">    print(<span class="string">"the square of &#123;&#125; equals &#123;&#125;"</span>.format(args.ParA, answer))</span><br><span class="line"><span class="keyword">elif</span> args.ParB == <span class="number">1</span>:</span><br><span class="line">    print(<span class="string">"&#123;&#125;^2 == &#123;&#125;"</span>.format(args.ParA, answer))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(answer)</span><br></pre></td></tr></table></figure>
+
+<p>命令行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py 4</span><br><span class="line">16</span><br><span class="line"></span><br><span class="line">$ python test.py 4 -b</span><br><span class="line">4^2 == 16</span><br><span class="line"></span><br><span class="line">$ python test.py 4 -bb</span><br><span class="line">the square of 4 equals 16</span><br><span class="line"></span><br><span class="line">$ python test.py 4 --ParB --ParB</span><br><span class="line">the square of 4 equals 16</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li><code>action=&#39;count&#39;</code>和<code>action=&#39;store_true&#39;</code>类似，该输入不需要具体值，而是根据命令行输入的该参数名的数量来决定该参数的值。</li>
+<li>对上述(2)test.py进行修改，在<code>else</code>前添加如下代码，则不输入<code>--ParB</code>时会报错，因为此时<code>args.ParB</code>是None而不是值为0。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">elif args.ParB &gt; 2:</span><br><span class="line">    print(&apos;ParB &gt; 2&apos;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py 4</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;test.py&quot;, line 11, in &lt;module&gt;</span><br><span class="line">    elif args.ParB &gt; 2:</span><br><span class="line">TypeError: &apos;&gt;&apos; not supported between instances of &apos;NoneType&apos; and &apos;int&apos;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>若想让上述情况不报错，可以设置<code>args.ParB</code>默认值为0，只需<code>parser.add_argument(&#39;-b&#39;, &quot;--ParB&quot;, help=&#39;我是B&#39;, default=0, action=&#39;count&#39;)</code>。</li>
+</ul>
+<hr>
+<h3 id="矛盾的选项"><a href="#矛盾的选项" class="headerlink" title="矛盾的选项"></a>矛盾的选项</h3><p>test.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">group = parser.add_mutually_exclusive_group()</span><br><span class="line">group.add_argument(<span class="string">"-t"</span>, <span class="string">"--true"</span>, action=<span class="string">"store_true"</span>)</span><br><span class="line">group.add_argument(<span class="string">"-f"</span>, <span class="string">"--false"</span>, action=<span class="string">"store_true"</span>)</span><br><span class="line">parser.add_argument(<span class="string">"ParA"</span>, help=<span class="string">'我是A'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">"ParB"</span>, help=<span class="string">'我是B'</span>, type=int)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line">answer = args.ParA * args.ParB</span><br><span class="line"><span class="keyword">if</span> args.true:</span><br><span class="line">    print(<span class="string">'true'</span>, answer)</span><br><span class="line"><span class="keyword">elif</span> args.false:</span><br><span class="line">    print(<span class="string">'false'</span>, answer)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'else'</span>, answer)</span><br></pre></td></tr></table></figure>
+
+<p>命令行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python test.py 4 5 -t</span><br><span class="line">true 20</span><br><span class="line"></span><br><span class="line">$ python test.py 4 5 -f</span><br><span class="line">false 20</span><br><span class="line"></span><br><span class="line">$ python test.py 4 5 -tf</span><br><span class="line">usage: test.py [-h] [-t | -f] ParA ParB</span><br><span class="line">test.py: error: argument -f/--false: not allowed with argument -t/--true</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li><code>parser.add_mutually_exclusive_group()</code>内的参数是相互冲突的，在命令行中输入其中一个，就不能输入其他的。</li>
+</ul>
+<hr>
+<h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><p>argparse模块还有很多其他的功能，转到<a href="https://docs.python.org/3.6/library/argparse.html#module-argparse" target="_blank" rel="noopener">argparse</a>以查看更多内容。<br>参考文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/00425f6c0936" target="_blank" rel="noopener">https://www.jianshu.com/p/00425f6c0936</a></li>
+<li><a href="https://docs.python.org/3.6/howto/argparse.html#introducing-optional-arguments" target="_blank" rel="noopener">https://docs.python.org/3.6/howto/argparse.html#introducing-optional-arguments</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+	<div>
+		
+			<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">---------------本文结束<i class="fa fa-smile-o"></i>感谢您的阅读---------------</div>
+    
+</div>
+		
+	</div>
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/argparse/" rel="tag"><i class="fa fa-tag"></i> argparse</a>
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/05/MATLAB蚁群算法/" rel="next" title="MATLAB蚁群算法">
+                <i class="fa fa-chevron-left"></i> MATLAB蚁群算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/06/CNN相关知识/" rel="prev" title="CNN相关知识&论文阅读笔记">
+                CNN相关知识&论文阅读笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/assets/img/avatar.jpg" alt="16061182">
+            
+              <p class="site-author-name" itemprop="name">16061182</p>
+              <div class="site-description motion-element" itemprop="description">16061182的个人博客</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://60.205.230.0" title="http://60.205.230.0" rel="noopener" target="_blank">某不知名论坛</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#argparse简介"><span class="nav-number">1.</span> <span class="nav-text">argparse简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#位置参数"><span class="nav-number">1.1.</span> <span class="nav-text">位置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选参数"><span class="nav-number">1.2.</span> <span class="nav-text">可选参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置参数和可选参数结合"><span class="nav-number">1.3.</span> <span class="nav-text">位置参数和可选参数结合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#矛盾的选项"><span class="nav-number">1.4.</span> <span class="nav-text">矛盾的选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写在最后"><span class="nav-number">1.5.</span> <span class="nav-text">写在最后</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">16061182</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

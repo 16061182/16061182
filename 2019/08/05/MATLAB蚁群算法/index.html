@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="MATLAB蚁群算法之前做的一个作业，想复习MATLAB语法的话可以看看 算法（tsp_ant.m） 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879">
+<meta name="keywords" content="matlab,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MATLAB蚁群算法">
+<meta property="og:url" content="http://16061182.com/2019/08/05/MATLAB蚁群算法/index.html">
+<meta property="og:site_name" content="长夜不是宿醉的开始">
+<meta property="og:description" content="MATLAB蚁群算法之前做的一个作业，想复习MATLAB语法的话可以看看 算法（tsp_ant.m） 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-05T13:44:03.448Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MATLAB蚁群算法">
+<meta name="twitter:description" content="MATLAB蚁群算法之前做的一个作业，想复习MATLAB语法的话可以看看 算法（tsp_ant.m） 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="长夜不是宿醉的开始" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="http://16061182.com/2019/08/05/MATLAB蚁群算法/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MATLAB蚁群算法 | 长夜不是宿醉的开始</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/16061182" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">长夜不是宿醉的开始</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">16061182的个人博客</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://16061182.com/2019/08/05/MATLAB蚁群算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="16061182">
+      <meta itemprop="description" content="16061182的个人博客">
+      <meta itemprop="image" content="/assets/img/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长夜不是宿醉的开始">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MATLAB蚁群算法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-05 21:20:15 / 修改时间：21:44:03" itemprop="dateCreated datePublished" datetime="2019-08-05T21:20:15+08:00">2019-08-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/杂项/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="MATLAB蚁群算法"><a href="#MATLAB蚁群算法" class="headerlink" title="MATLAB蚁群算法"></a>MATLAB蚁群算法</h2><h4 id="之前做的一个作业，想复习MATLAB语法的话可以看看"><a href="#之前做的一个作业，想复习MATLAB语法的话可以看看" class="headerlink" title="之前做的一个作业，想复习MATLAB语法的话可以看看"></a>之前做的一个作业，想复习MATLAB语法的话可以看看</h4><ul>
+<li><p>算法（tsp_ant.m）</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tsp_ant</span><span class="params">(inputx,inputy)</span></span></span><br><span class="line">    tic;</span><br><span class="line"><span class="comment">%   inputx和inputy都是一维列向量，分别代表城市的x横坐标和纵坐标</span></span><br><span class="line">    C = [inputx,inputy]; <span class="comment">%记录了城市的坐标</span></span><br><span class="line">    times_limit = <span class="number">500</span>; <span class="comment">%最大迭代次数</span></span><br><span class="line">    m = <span class="number">20</span>; <span class="comment">%蚂蚁数量</span></span><br><span class="line">    n = <span class="built_in">size</span>(inputx,<span class="number">1</span>); <span class="comment">%城市数量，n为inputx第一维的长度</span></span><br><span class="line">    graph = <span class="built_in">zeros</span>(n,n); <span class="comment">%存储距离</span></span><br><span class="line">    alpha = <span class="number">1</span>; <span class="comment">%信息素的加权值</span></span><br><span class="line">    <span class="built_in">beta</span> = <span class="number">3</span>; <span class="comment">%能见度的加权值</span></span><br><span class="line">    ro = <span class="number">0.1</span>; <span class="comment">%信息素蒸发系数%每次使用前更新</span></span><br><span class="line">    Q = <span class="number">10</span>^<span class="number">6</span>; <span class="comment">%信息素增加强度系数</span></span><br><span class="line">    best_route = <span class="built_in">zeros</span>(times_limit,n); <span class="comment">%每次迭代的最佳路线</span></span><br><span class="line">    best_length = <span class="built_in">inf</span> * <span class="built_in">ones</span>(times_limit,<span class="number">1</span>); <span class="comment">%每次迭代的最佳路线的长度</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">%   Step1 : 变量初始化</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:n</span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:n</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">i</span> ~= <span class="built_in">j</span>)</span><br><span class="line">                graph(<span class="built_in">i</span>,<span class="built_in">j</span>) = ((C(<span class="built_in">i</span>,<span class="number">1</span>) - C(<span class="built_in">j</span>,<span class="number">1</span>))^<span class="number">2</span> + (C(<span class="built_in">i</span>,<span class="number">2</span>) - C(<span class="built_in">j</span>,<span class="number">2</span>))^<span class="number">2</span>)^<span class="number">0.5</span>; </span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                graph(<span class="built_in">i</span>,<span class="built_in">j</span>) = <span class="built_in">realmin</span>; </span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    iota = <span class="number">1.</span>/graph; </span><br><span class="line">    tau = <span class="built_in">ones</span>(n,n); </span><br><span class="line">    tabu = <span class="built_in">zeros</span>(m,n);  </span><br><span class="line">    average_length = <span class="built_in">zeros</span>(times_limit,<span class="number">1</span>); </span><br><span class="line">    </span><br><span class="line"><span class="comment">%   Step2 : 放置蚂蚁</span></span><br><span class="line">    <span class="keyword">for</span> time = <span class="number">1</span>:times_limit </span><br><span class="line">        location = randi(n,<span class="number">1</span>,m);</span><br><span class="line">        tabu(:,<span class="number">1</span>) = (location(<span class="number">1</span>:m))'; </span><br><span class="line">        </span><br><span class="line"><span class="comment">%   Step3 : 蚂蚁完成各自路径</span></span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">2</span>:n </span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:m</span><br><span class="line">                visited = tabu(<span class="built_in">i</span>,<span class="number">1</span>:(<span class="built_in">j</span><span class="number">-1</span>)); </span><br><span class="line">                next_cities = <span class="built_in">zeros</span>(<span class="number">1</span>,(n-<span class="built_in">j</span>+<span class="number">1</span>)); </span><br><span class="line">                next_properties = <span class="built_in">zeros</span>(<span class="number">1</span>,(n-<span class="built_in">j</span>+<span class="number">1</span>)); </span><br><span class="line">                index = <span class="number">1</span>; </span><br><span class="line">                <span class="keyword">for</span> k = <span class="number">1</span>:n</span><br><span class="line">                    <span class="keyword">if</span> <span class="built_in">ismember</span>(k,visited) == <span class="number">0</span> </span><br><span class="line">                        next_cities(index) = k;</span><br><span class="line">                        index = index + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">end</span></span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">                <span class="keyword">for</span> k = <span class="number">1</span>:<span class="built_in">length</span>(next_cities) </span><br><span class="line">                    next_properties(k) = (tau(visited(<span class="keyword">end</span>),next_cities(k))^alpha) * (iota(visited(<span class="keyword">end</span>),next_cities(k))^<span class="built_in">beta</span>);</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">                next_properties = next_properties/sum(next_properties);</span><br><span class="line">                <span class="comment">%使用轮盘赌的方法模拟按概率选择下一城市的过程</span></span><br><span class="line">                roulette = cumsum(next_properties);</span><br><span class="line">                pointer = <span class="built_in">rand</span>;</span><br><span class="line">                <span class="keyword">for</span> k = <span class="number">1</span>:<span class="built_in">length</span>(roulette)</span><br><span class="line">                    <span class="keyword">if</span> roulette(k) &gt;= pointer</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                    <span class="keyword">end</span></span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">                to_visit = next_cities(k);</span><br><span class="line">                tabu(<span class="built_in">i</span>,<span class="built_in">j</span>) = to_visit; </span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">if</span> time &gt;= <span class="number">2</span></span><br><span class="line">            tabu(<span class="number">1</span>,:) = best_route(time<span class="number">-1</span>,:); </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        </span><br><span class="line"><span class="comment">%   Step4 : 记录本次迭代最佳路线</span></span><br><span class="line">        route_length = <span class="built_in">zeros</span>(m,<span class="number">1</span>); </span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:m</span><br><span class="line">            route_i = tabu(<span class="built_in">i</span>,:); </span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:(n<span class="number">-1</span>)</span><br><span class="line">                route_length(<span class="built_in">i</span>) = route_length(<span class="built_in">i</span>) + graph(route_i(<span class="built_in">j</span>),route_i(<span class="built_in">j</span>+<span class="number">1</span>));</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            route_length(<span class="built_in">i</span>) = route_length(<span class="built_in">i</span>) + graph(route_i(<span class="number">1</span>),route_i(n)); </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        best_length(time) = <span class="built_in">min</span>(route_length); </span><br><span class="line">        [~,loc] = <span class="built_in">min</span>(route_length);</span><br><span class="line">        best_route(time,:) = tabu(loc,:); </span><br><span class="line">        average_length(time) = <span class="built_in">mean</span>(route_length); </span><br><span class="line">        </span><br><span class="line"><span class="comment">%   Step5 : 更新信息素</span></span><br><span class="line">        delta_tau = <span class="built_in">zeros</span>(n,n);</span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:m</span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:(n<span class="number">-1</span>) </span><br><span class="line">                delta_tau(tabu(<span class="built_in">i</span>,<span class="built_in">j</span>),tabu(<span class="built_in">i</span>,<span class="built_in">j</span>+<span class="number">1</span>)) = delta_tau(tabu(<span class="built_in">i</span>,<span class="built_in">j</span>),tabu(<span class="built_in">i</span>,<span class="built_in">j</span>+<span class="number">1</span>)) + Q/route_length(<span class="built_in">i</span>); </span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            delta_tau(tabu(<span class="built_in">i</span>,n),tabu(<span class="built_in">i</span>,<span class="number">1</span>)) = delta_tau(tabu(<span class="built_in">i</span>,n),tabu(<span class="built_in">i</span>,<span class="number">1</span>)) + Q/route_length(<span class="built_in">i</span>);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        tau = (<span class="number">1</span>-ro)*tau + delta_tau; </span><br><span class="line">        </span><br><span class="line"><span class="comment">%   Step6 : 路径表格清零</span></span><br><span class="line">        tabu = <span class="built_in">zeros</span>(m,n);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    </span><br><span class="line">    toc;</span><br><span class="line"><span class="comment">%   Step7 : 绘制图形</span></span><br><span class="line">    [~,loc] = <span class="built_in">min</span>(best_length); </span><br><span class="line">    the_route = best_route(loc,:); </span><br><span class="line">    the_length = best_length(loc); </span><br><span class="line">    <span class="comment">%绘制图1</span></span><br><span class="line">    <span class="built_in">figure</span>(<span class="number">1</span>)</span><br><span class="line">    set(gcf,<span class="string">'unit'</span>,<span class="string">'centimeters'</span>,<span class="string">'position'</span>,[<span class="number">5</span>,<span class="number">5</span>,<span class="number">20</span>,<span class="number">20</span>]);</span><br><span class="line">    axis square;</span><br><span class="line">    <span class="built_in">scatter</span>(C(:,<span class="number">1</span>),C(:,<span class="number">2</span>)); <span class="comment">%绘制散点图</span></span><br><span class="line">    <span class="built_in">hold</span> on</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:n<span class="number">-1</span></span><br><span class="line">        <span class="built_in">plot</span>([C(the_route(<span class="built_in">i</span>),<span class="number">1</span>),C(the_route(<span class="built_in">i</span>+<span class="number">1</span>),<span class="number">1</span>)],[C(the_route(<span class="built_in">i</span>),<span class="number">2</span>),C(the_route(<span class="built_in">i</span>+<span class="number">1</span>),<span class="number">2</span>)],<span class="string">'-rd'</span>,<span class="string">'LineWidth'</span>,<span class="number">3</span>,<span class="string">'MarkerEdgeColor'</span>,<span class="string">'k'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>); </span><br><span class="line">        <span class="built_in">hold</span> on</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="built_in">plot</span>([C(the_route(<span class="number">1</span>),<span class="number">1</span>),C(the_route(n),<span class="number">1</span>)],[C(the_route(<span class="number">1</span>),<span class="number">2</span>),C(the_route(n),<span class="number">2</span>)],<span class="string">'-rd'</span>,<span class="string">'LineWidth'</span>,<span class="number">3</span>,<span class="string">'MarkerEdgeColor'</span>,<span class="string">'k'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>);</span><br><span class="line">    <span class="built_in">hold</span> on</span><br><span class="line">    xlabel(<span class="string">'x'</span>);</span><br><span class="line">    ylabel(<span class="string">'y'</span>);</span><br><span class="line">    title(<span class="string">'最短路线图'</span>);</span><br><span class="line">    text(<span class="number">72</span>,<span class="number">99</span>,[<span class="string">'最短路径长度 = '</span>,num2str(the_length)]);</span><br><span class="line">    text(<span class="number">72</span>,<span class="number">96</span>,[<span class="string">'历史平均长度 = '</span>,num2str(<span class="built_in">mean</span>(average_length))]);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>应用（控制台）</p>
+</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; x = <span class="built_in">round</span>(<span class="built_in">rand</span>(<span class="number">1</span>,<span class="number">100</span>)*<span class="number">100</span>)'</span><br><span class="line">&gt;&gt; y = <span class="built_in">round</span>(<span class="built_in">rand</span>(<span class="number">1</span>,<span class="number">100</span>)*<span class="number">100</span>)'</span><br><span class="line">&gt;&gt; tsp_ant(x,y)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+	<div>
+		
+			<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">---------------本文结束<i class="fa fa-smile-o"></i>感谢您的阅读---------------</div>
+    
+</div>
+		
+	</div>
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/matlab/" rel="tag"><i class="fa fa-tag"></i> matlab</a>
+          
+            <a href="/tags/算法/" rel="tag"><i class="fa fa-tag"></i> 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/05/matplotlib绘图示例以及一些numpy函数解析/" rel="next" title="matplotlib绘图示例以及一些numpy函数解析">
+                <i class="fa fa-chevron-left"></i> matplotlib绘图示例以及一些numpy函数解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/18/argparse简介/" rel="prev" title="argparse简介">
+                argparse简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/assets/img/avatar.jpg" alt="16061182">
+            
+              <p class="site-author-name" itemprop="name">16061182</p>
+              <div class="site-description motion-element" itemprop="description">16061182的个人博客</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://60.205.230.0" title="http://60.205.230.0" rel="noopener" target="_blank">某不知名论坛</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MATLAB蚁群算法"><span class="nav-number">1.</span> <span class="nav-text">MATLAB蚁群算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#之前做的一个作业，想复习MATLAB语法的话可以看看"><span class="nav-number">1.0.1.</span> <span class="nav-text">之前做的一个作业，想复习MATLAB语法的话可以看看</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">16061182</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
